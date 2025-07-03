@@ -8,6 +8,30 @@ API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
 
 
 def add_update_tab():
+    st.markdown("""
+        > **ℹ️ Note:**  
+        > - This app includes **demo expense data** to showcase features.  
+        > - To enter your own data, click **🗑️ Delete Demo Data** below. This will erase all demo entries.  
+        > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.  
+        > - After deleting, add your own data and view analytics based on that.
+        """)
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("❌ Delete Demo Data"):
+            res = requests.delete(f"{API_URL}/delete-demo-data")
+            if res.status_code == 200:
+                st.success("Demo data deleted successfully.")
+            else:
+                st.error("Failed to delete demo data.")
+
+    with col2:
+        if st.button("🔄 Reset Demo Data"):
+            res = requests.post(f"{API_URL}/reset-demo-data")
+            if res.status_code == 200:
+                st.success("Demo data restored successfully.")
+            else:
+                st.error("Failed to reset demo data.")
     selected_date = st.date_input("Enter Date", datetime(2024, 8, 1), label_visibility="collapsed")
     response = requests.get(f"{API_URL}/expenses/{selected_date}")
     if response.status_code == 200:

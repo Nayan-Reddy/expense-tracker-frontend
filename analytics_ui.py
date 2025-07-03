@@ -12,10 +12,10 @@ API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
 def analytics_tab():
     col1, col2 = st.columns(2)
     with col1:
-        start_date = st.date_input("Start Date", datetime(2024, 8, 1))
+        start_date = st.date_input("Start Date", datetime(2025, 1, 3))
 
     with col2:
-        end_date = st.date_input("End Date", datetime(2024, 8, 5))
+        end_date = st.date_input("End Date", datetime(2025, 6, 30))
 
     if st.button("Get Analytics"):
         payload = {
