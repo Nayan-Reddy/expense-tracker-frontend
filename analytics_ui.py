@@ -23,26 +23,21 @@ def analytics_tab():
             "session_id": st.session_state.session_id
         }
 
-        try:
-            response = requests.post(f"{API_URL}/analytics/", json=payload)
-            if response.status_code != 200:
-                st.error("Failed to fetch analytics.")
-                return
+        response = requests.post(f"{API_URL}/analytics/", json=payload)
+        if response.status_code != 200:
+            st.error("Failed to fetch analytics.")
+            return
 
-            data = response.json()
-            df = pd.DataFrame({
-                "Category": list(data.keys()),
-                "Total": [data[cat]["total"] for cat in data],
-                "Percentage": [data[cat]["percentage"] for cat in data]
-            })
+        response = response.json()
+        df = pd.DataFrame({
+            "Category": list(response.keys()),
+            "Total": [response[c]["total"] for c in response],
+            "Percentage": [response[c]["percentage"] for c in response]
+        }).sort_values("Percentage", ascending=False)
 
-            df_sorted = df.sort_values(by="Percentage", ascending=False)
-            st.title("Expense Breakdown By Category")
-            st.bar_chart(df_sorted.set_index("Category")["Percentage"], use_container_width=True)
+        st.title("Expense Breakdown By Category")
+        st.bar_chart(df.set_index("Category")["Percentage"], use_container_width=True)
 
-            df_sorted["Total"] = df_sorted["Total"].map("{:.2f}".format)
-            df_sorted["Percentage"] = df_sorted["Percentage"].map("{:.2f}".format)
-            st.table(df_sorted)
-
-        except Exception:
-            st.error("Error communicating with the backend.")
+        df["Total"] = df["Total"].map("{:.2f}".format)
+        df["Percentage"] = df["Percentage"].map("{:.2f}".format)
+        st.table(df)
