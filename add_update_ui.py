@@ -84,10 +84,11 @@ def add_update_tab():
             else:
                 st.error("Failed to update expenses.")
 
-    st.markdown("""---  
-    > **ℹ️ Note:**  
-    > - This app has Demo Data Entries and shows Demo data analytics initially.  
-    > - Preview Demo Data Analytics before inputting your own data.  
-    > - Once you enter your own expenses, analytics will reflect your personal data only.  
-    > - To go back to demo data view, click **🔄 Reset Demo Data**.
+    st.markdown("---")
+    st.markdown(f"""  
+        > **ℹ️ Note:**  
+        > - This app has Demo Data Entries and shows Demo data analytics initially.  
+        > - Preview Demo Data Analytics before inputting your own data.  
+        > - Once you enter your own expenses, analytics will reflect your personal data only.  
+        > - To go back to demo data view, click **🔄 Reset Demo Data**.
     """)
