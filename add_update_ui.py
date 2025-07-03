@@ -11,13 +11,11 @@ def add_update_tab():
     # Mobile layout toggle
     is_mobile_view = st.toggle("📱 Mobile Friendly View", value=False)
 
-    # Delete and reset demo data
     # Reset demo data button only
     if st.button("🔄 Reset Demo Data"):
         res = requests.post(f"{API_URL}/reset-demo-data")
         if res.status_code == 200:
             st.success("Demo data restored successfully.")
-            st.session_state.session_id = "demo"  # 🔁 Switch back to demo session!
         else:
             st.error("Failed to reset demo data.")
 
@@ -30,7 +28,10 @@ def add_update_tab():
         st.error("Could not connect to backend.")
         existing_expenses = []
 
-    categories = ["Education", "Shopping", "Healthcare", "Entertainment", "Groceries", "Utilities", "Transportation", "Miscellaneous"]
+    categories = [
+        "Education", "Shopping", "Healthcare", "Entertainment",
+        "Groceries", "Utilities", "Transportation", "Miscellaneous"
+    ]
 
     with st.form(key="expense_form"):
         st.markdown("### Enter Your Expenses")
@@ -56,7 +57,7 @@ def add_update_tab():
                 st.markdown(f"#### Entry {i+1}")
                 amount_input = st.number_input("Amount", min_value=0.0, step=1.0, value=amount, key=f"amount_{i}")
                 category_input = st.selectbox("Category", options=categories, index=categories.index(category), key=f"category_{i}")
-                notes_input = st.text_input("Notes", value=notes, key=f"notes_{i}")
+                notes_input = st.text_area("Notes", value=notes, key=f"notes_{i}", height=60)
             else:
                 col1, col2, col3 = st.columns(3)
                 with col1:
@@ -76,7 +77,7 @@ def add_update_tab():
         if submit_button:
             filtered_expenses = [expense for expense in expenses if expense['amount'] > 0]
             if st.session_state.session_id == "demo":
-                st.session_state.session_id = str(uuid.uuid4())  # ⬅️ switch to private session
+                st.session_state.session_id = str(uuid.uuid4())
             response = requests.post(f"{API_URL}/expenses/{selected_date}?session_id={st.session_state.session_id}", json=filtered_expenses)
             if response.status_code == 200:
                 st.success("Expenses updated successfully!")
@@ -85,9 +86,8 @@ def add_update_tab():
 
     st.markdown("""---  
     > **ℹ️ Note:**  
-    > - This app has Demo Data Entries and shows Demo data analytics initially.
-    > - Preview Demo Data Analytics before inputting your own data  
+    > - This app has Demo Data Entries and shows Demo data analytics initially.  
+    > - Preview Demo Data Analytics before inputting your own data.  
     > - Once you enter your own expenses, analytics will reflect your personal data only.  
     > - To go back to demo data view, click **🔄 Reset Demo Data**.
     """)
-
