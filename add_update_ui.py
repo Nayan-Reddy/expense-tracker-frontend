@@ -8,13 +8,7 @@ API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
 
 
 def add_update_tab():
-    st.markdown("""
-        > **ℹ️ Note:**  
-        > - This app includes **demo expense data** to showcase features.  
-        > - To enter your own data, click **🗑️ Delete Demo Data** below. This will erase all demo entries.  
-        > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.  
-        > - After deleting, add your own data and view analytics based on that.
-        """)
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -88,3 +82,11 @@ def add_update_tab():
                 st.success("Expenses updated successfully!")
             else:
                 st.error("Failed to update expenses.")
+
+    st.markdown("""
+        > **ℹ️ Note:**  
+        > - This app includes **demo expense data** to showcase features.  
+        > - To enter your own data, click **🗑️ Delete Demo Data** below. This will erase all demo entries.  
+        > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.  
+        > - After deleting, add your own data and view analytics based on that.
+        """)
