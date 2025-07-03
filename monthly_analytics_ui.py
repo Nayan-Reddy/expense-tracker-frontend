@@ -11,7 +11,7 @@ def monthly_analytics_tab():
     with col1:
         start_date = st.date_input("Start Date", datetime(2025, 1, 3), key="start_monthly")
     with col2:
-        end_date = st.date_input("End Date", datetime(2025, 6, 30), key="end_monthly")
+        end_date = st.date_input("End Date", datetime.today(), key="end_monthly")
 
     if st.button("Get Monthly Analytics"):
         payload = {

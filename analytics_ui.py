@@ -15,7 +15,7 @@ def analytics_tab():
         start_date = st.date_input("Start Date", datetime(2025, 1, 3))
 
     with col2:
-        end_date = st.date_input("End Date", datetime(2025, 6, 30))
+        end_date = st.date_input("End Date", datetime.today())
 
     if st.button("Get Analytics"):
         payload = {

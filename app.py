@@ -14,4 +14,4 @@ with tab2:
     analytics_tab()
 
 with tab3:
-    monthly_analytics_tab() 
+    monthly_analytics_tab()

@@ -26,7 +26,7 @@ def add_update_tab():
                 st.success("Demo data restored successfully.")
             else:
                 st.error("Failed to reset demo data.")
-    selected_date = st.date_input("Enter Date", datetime(2024, 8, 1), label_visibility="collapsed")
+    selected_date = st.date_input("Enter Date", datetime.today(), label_visibility="collapsed")
     response = requests.get(f"{API_URL}/expenses/{selected_date}")
     if response.status_code == 200:
         existing_expenses = response.json()
@@ -85,8 +85,9 @@ def add_update_tab():
 
     st.markdown("""
         > **ℹ️ Note:**  
-        > - This app includes **demo expense data** to showcase features.  
+        > - This app includes **demo expense data** to showcase features in analytics tabs.  
         > - To enter your own data, click **🗑️ Delete Demo Data** below. This will erase all demo entries.  
-        > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.  
         > - After deleting, add your own data and view analytics based on that.
+        > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.  
+        
         """)
