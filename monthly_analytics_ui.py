@@ -23,17 +23,23 @@ def monthly_analytics_tab():
             "session_id": st.session_state.session_id
         }
 
-        response = requests.post(f"{API_URL}/analytics/monthly", json=payload)
-        if response.status_code != 200:
-            st.error("Failed to fetch monthly analytics.")
-            return
+        try:
+            response = requests.post(f"{API_URL}/analytics/monthly", json=payload)
+            if response.status_code != 200:
+                st.error("Failed to fetch monthly analytics.")
+                return
 
-        df = pd.DataFrame(response.json())
-        if df.empty:
-            st.info("No data found for selected range.")
-            return
+            result = response.json()
+            df = pd.DataFrame(result)
 
-        pivot = df.pivot(index="month", columns="category", values="total").fillna(0)
-        st.title("Monthly Expense Summary")
-        st.bar_chart(pivot)
-        st.dataframe(pivot.style.format("{:.2f}"))
+            if df.empty:
+                st.info("No data found for selected range.")
+                return
+
+            pivot = df.pivot(index="month", columns="category", values="total").fillna(0)
+            st.title("Monthly Expense Summary")
+            st.bar_chart(pivot)
+            st.dataframe(pivot.style.format("{:.2f}"))
+
+        except Exception:
+            st.error("Error communicating with the backend.")
