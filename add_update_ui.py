@@ -90,10 +90,11 @@ def add_update_tab():
     # Bottom note
     st.markdown("""
     ---
-    > **ℹ️ Notes:**
-    > - This app includes **demo expense data** to showcase features in analytics tabs.  
+    > **ℹ️ Note:**
+    > - This app includes **Demo expense data** to showcase features in analytics tabs.  
+    > - Submitting your data without deleting Demo data will mix your entries with it, making results inaccurate. 
     > - To enter your own data, click **🗑️ Delete Demo Data** above. This will erase all demo entries.  
-    > - After deleting, add your own data and view analytics based on that.  
+    > - After deleting, add your data to view analytics specific to your entries. 
     > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.
-    > - Access demo data analytics by selecting the tabs above and clicking 'Get' to visualize results.
+    > - Access demo data analytics by selecting the tabs above and clicking 'Get analytics' to visualize results.
     """)
