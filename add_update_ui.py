@@ -78,7 +78,7 @@ def add_update_tab():
                 'notes': notes_input
             })
 
-        submit_button = st.form_submit_button("💾 Save Expenses")
+        submit_button = st.form_submit_button("Save Expenses")
         if submit_button:
             filtered_expenses = [expense for expense in expenses if expense['amount'] > 0]
             response = requests.post(f"{API_URL}/expenses/{selected_date}", json=filtered_expenses)
@@ -88,11 +88,12 @@ def add_update_tab():
                 st.error("Failed to update expenses.")
 
     # Bottom note
-    st.markdown("---")
     st.markdown("""
-        > **ℹ️ Notes about Demo Data:**  
-        > - This app includes **demo expense data** to showcase features in analytics tabs.  
-        > - To enter your own data, click **❌ Delete Demo Data** above. This will erase all demo entries.  
-        > - After deleting, add your own data and view analytics based on that.  
-        > - You can bring back the demo data anytime by clicking **🔄 Reset Demo Data**.  
+    ---
+    > **ℹ️ Notes:**
+    > - This app includes **demo expense data** to showcase features in analytics tabs.  
+    > - To enter your own data, click **🗑️ Delete Demo Data** above. This will erase all demo entries.  
+    > - After deleting, add your own data and view analytics based on that.  
+    > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.
+    > - Access demo data analytics by selecting the tabs above and clicking 'Get' to visualize results.
     """)
