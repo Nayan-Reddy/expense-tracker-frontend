@@ -7,7 +7,13 @@ API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
 def add_update_tab():
     st.subheader("Manage Your Expenses")
 
-    session_id = st.session_state['session_id']
+    # Initialize session_id
+    if "session_id" not in st.session_state:
+        import uuid
+        st.session_state.session_id = str(uuid.uuid4())
+
+    # Toggle for mobile-friendly layout
+    is_mobile_view = st.toggle("📱 Mobile Friendly View", value=False)
 
     # Demo data buttons
     col1, col2 = st.columns(2)
@@ -26,25 +32,37 @@ def add_update_tab():
             else:
                 st.error("Failed to reset demo data.")
 
+    # Load expenses
     selected_date = st.date_input("Enter Date", datetime.today(), label_visibility="collapsed")
-
-    response = requests.get(f"{API_URL}/expenses/{selected_date}", params={"session_id": session_id})
-    existing_expenses = response.json() if response.status_code == 200 else []
-    if response.status_code != 200:
-        st.error("Failed to retrieve expenses")
+    try:
+        response = requests.get(f"{API_URL}/expenses/{selected_date}?session_id={st.session_state.session_id}")
+        existing_expenses = response.json() if response.status_code == 200 else []
+        if response.status_code != 200:
+            st.error("Failed to retrieve expenses")
+    except:
+        st.error("Error connecting to backend.")
+        existing_expenses = []
 
     categories = ["Education", "Shopping", "Healthcare", "Entertainment", "Groceries", "Utilities", "Transportation", "Miscellaneous"]
 
     with st.form(key="expense_form"):
         st.markdown("### Enter Your Expenses")
-
-        is_mobile_view = st.toggle("📱 Mobile Friendly View", value=False)
+        if not is_mobile_view:
+            col1, col2, col3 = st.columns(3)
+            with col1: st.text("Amount")
+            with col2: st.text("Category")
+            with col3: st.text("Notes")
 
         expenses = []
         for i in range(5):
-            amount = existing_expenses[i]['amount'] if i < len(existing_expenses) else 0.0
-            category = existing_expenses[i]['category'] if i < len(existing_expenses) else "Shopping"
-            notes = existing_expenses[i]['notes'] if i < len(existing_expenses) else ""
+            if i < len(existing_expenses):
+                amount = existing_expenses[i]['amount']
+                category = existing_expenses[i]["category"]
+                notes = existing_expenses[i]["notes"]
+            else:
+                amount = 0.0
+                category = "Shopping"
+                notes = ""
 
             if is_mobile_view:
                 st.markdown(f"#### Entry {i+1}")
@@ -69,23 +87,16 @@ def add_update_tab():
         submit_button = st.form_submit_button("Save Expenses")
         if submit_button:
             filtered_expenses = [expense for expense in expenses if expense['amount'] > 0]
-            response = requests.post(
-                f"{API_URL}/expenses/{selected_date}",
-                params={"session_id": session_id},
-                json=filtered_expenses
-            )
+            response = requests.post(f"{API_URL}/expenses/{selected_date}?session_id={st.session_state.session_id}", json=filtered_expenses)
             if response.status_code == 200:
                 st.success("Expenses updated successfully!")
             else:
                 st.error("Failed to update expenses.")
 
-    st.markdown("""
-    ---
-    > **ℹ️ Note:**
-    > - This app includes **Demo expense data** to showcase features in analytics tabs.  
-    > - Submitting your data without deleting Demo data will mix your entries with it, making results inaccurate. 
-    > - To enter your own data, click **🗑️ Delete Demo Data** above. This will erase all demo entries.  
-    > - After deleting, add your data to view analytics specific to your entries. 
-    > - You can bring back the demo data anytime by clicking **🔁 Reset Demo Data**.
-    > - Access demo data analytics by selecting the tabs above and clicking 'Get analytics' to visualize results.
-    """)
+    st.markdown("""---  
+> **ℹ️ Note:**  
+> - This app includes **Demo data** for analytics.  
+> - Submitting without deleting demo data may mix your entries.  
+> - Click **🗑️ Delete Demo Data** to start fresh.  
+> - You can restore it anytime with **🔄 Reset Demo Data**.  
+> - Your session data is isolated and private.""")

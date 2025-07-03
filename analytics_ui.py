@@ -6,7 +6,9 @@ import pandas as pd
 API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
 
 def analytics_tab():
-    session_id = st.session_state['session_id']
+    if "session_id" not in st.session_state:
+        st.warning("Session not initialized. Please add/update expenses first.")
+        return
 
     col1, col2 = st.columns(2)
     with col1:
@@ -18,24 +20,25 @@ def analytics_tab():
         payload = {
             "start_date": start_date.strftime("%Y-%m-%d"),
             "end_date": end_date.strftime("%Y-%m-%d"),
-            "session_id": session_id
+            "session_id": st.session_state.session_id
         }
 
         response = requests.post(f"{API_URL}/analytics/", json=payload)
-        if response.status_code == 200:
-            response = response.json()
-            data = {
-                "Category": list(response.keys()),
-                "Total": [response[cat]["total"] for cat in response],
-                "Percentage": [response[cat]["percentage"] for cat in response]
-            }
+        if response.status_code != 200:
+            st.error("Failed to fetch analytics.")
+            return
 
-            df = pd.DataFrame(data).sort_values(by="Percentage", ascending=False)
-            st.title("Expense Breakdown By Category")
-            st.bar_chart(data=df.set_index("Category")['Percentage'], use_container_width=True)
+        response = response.json()
+        data = {
+            "Category": list(response.keys()),
+            "Total": [response[cat]["total"] for cat in response],
+            "Percentage": [response[cat]["percentage"] for cat in response]
+        }
 
-            df["Total"] = df["Total"].map("{:.2f}".format)
-            df["Percentage"] = df["Percentage"].map("{:.2f}".format)
-            st.table(df)
-        else:
-            st.error("Failed to retrieve analytics.")
+        df = pd.DataFrame(data).sort_values(by="Percentage", ascending=False)
+        st.title("Expense Breakdown By Category")
+
+        st.bar_chart(data=df.set_index("Category")["Percentage"], use_container_width=True)
+        df["Total"] = df["Total"].map("{:.2f}".format)
+        df["Percentage"] = df["Percentage"].map("{:.2f}".format)
+        st.table(df)
