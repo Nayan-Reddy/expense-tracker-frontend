@@ -19,7 +19,7 @@ def monthly_analytics_tab():
             "end_date": end_date.strftime("%Y-%m-%d")
         }
 
-        response = requests.post(f"{API_URL}/monthly-analytics/", json=payload)
+        response = requests.post(f"{API_URL}/analytics/monthly", json=payload)
         if response.status_code == 200:
             result = response.json()
             df = pd.DataFrame(result)
