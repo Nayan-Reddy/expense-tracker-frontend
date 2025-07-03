@@ -6,9 +6,7 @@ import pandas as pd
 API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
 
 def analytics_tab():
-    if "session_id" not in st.session_state:
-        st.warning("Session not initialized. Please add/update expenses first.")
-        return
+    session_id = st.session_state.session_id if st.session_state.get("user_entered_data") else "demo"
 
     col1, col2 = st.columns(2)
     with col1:
@@ -20,7 +18,7 @@ def analytics_tab():
         payload = {
             "start_date": start_date.strftime("%Y-%m-%d"),
             "end_date": end_date.strftime("%Y-%m-%d"),
-            "session_id": st.session_state.session_id
+            "session_id": session_id
         }
 
         response = requests.post(f"{API_URL}/analytics/", json=payload)
@@ -28,16 +26,14 @@ def analytics_tab():
             st.error("Failed to fetch analytics.")
             return
 
-        response = response.json()
-        data = {
-            "Category": list(response.keys()),
-            "Total": [response[cat]["total"] for cat in response],
-            "Percentage": [response[cat]["percentage"] for cat in response]
-        }
+        data = response.json()
+        df = pd.DataFrame({
+            "Category": list(data.keys()),
+            "Total": [data[cat]["total"] for cat in data],
+            "Percentage": [data[cat]["percentage"] for cat in data]
+        }).sort_values(by="Percentage", ascending=False)
 
-        df = pd.DataFrame(data).sort_values(by="Percentage", ascending=False)
         st.title("Expense Breakdown By Category")
-
         st.bar_chart(data=df.set_index("Category")["Percentage"], use_container_width=True)
         df["Total"] = df["Total"].map("{:.2f}".format)
         df["Percentage"] = df["Percentage"].map("{:.2f}".format)

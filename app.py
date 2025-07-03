@@ -4,9 +4,11 @@ from analytics_ui import analytics_tab
 from monthly_analytics_ui import monthly_analytics_tab
 import uuid
 
-# Generate a unique session_id for each user
+# Unique session ID per user
 if "session_id" not in st.session_state:
-    st.session_state["session_id"] = str(uuid.uuid4())
+    st.session_state["session_id"] = "demo"
+if "user_entered_data" not in st.session_state:
+    st.session_state["user_entered_data"] = False  # Flag for switching between demo and user session
 
 st.title("Expense Tracking System")
 
