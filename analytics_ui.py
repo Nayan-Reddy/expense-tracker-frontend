@@ -4,8 +4,8 @@ import requests
 import pandas as pd
 
 
-import os
-API_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
+
 
 
 

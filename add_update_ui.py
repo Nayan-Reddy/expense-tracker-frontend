@@ -2,8 +2,8 @@ import streamlit as st
 from datetime import datetime
 import requests
 
-import os
-API_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
+
 
 
 
