@@ -4,9 +4,10 @@ import pandas as pd
 from datetime import datetime
 
 API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
-SESSION_ID = "demo"
 
 def monthly_analytics_tab():
+    session_id = st.session_state['session_id']
+
     col1, col2 = st.columns(2)
     with col1:
         start_date = st.date_input("Start Date", datetime(2025, 1, 3), key="start_monthly")
@@ -17,7 +18,7 @@ def monthly_analytics_tab():
         payload = {
             "start_date": start_date.strftime("%Y-%m-%d"),
             "end_date": end_date.strftime("%Y-%m-%d"),
-            "session_id": SESSION_ID
+            "session_id": session_id
         }
 
         response = requests.post(f"{API_URL}/analytics/monthly", json=payload)

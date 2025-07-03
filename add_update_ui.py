@@ -3,27 +3,32 @@ from datetime import datetime
 import requests
 
 API_URL = "https://expense-tracker-backend-t4tx.onrender.com"
-SESSION_ID = "demo"  # default session
 
 def add_update_tab():
     st.subheader("Manage Your Expenses")
 
-    is_mobile_view = st.toggle("📱 Mobile Friendly View", value=False)
+    session_id = st.session_state['session_id']
 
     # Demo data buttons
     col1, col2 = st.columns(2)
     with col1:
         if st.button("❌ Delete Demo Data"):
             res = requests.delete(f"{API_URL}/delete-demo-data")
-            st.success("Demo data deleted successfully.") if res.status_code == 200 else st.error("Failed to delete demo data.")
+            if res.status_code == 200:
+                st.success("Demo data deleted successfully.")
+            else:
+                st.error("Failed to delete demo data.")
     with col2:
         if st.button("🔄 Reset Demo Data"):
             res = requests.post(f"{API_URL}/reset-demo-data")
-            st.success("Demo data restored successfully.") if res.status_code == 200 else st.error("Failed to reset demo data.")
+            if res.status_code == 200:
+                st.success("Demo data restored successfully.")
+            else:
+                st.error("Failed to reset demo data.")
 
     selected_date = st.date_input("Enter Date", datetime.today(), label_visibility="collapsed")
 
-    response = requests.get(f"{API_URL}/expenses/{selected_date}?session_id={SESSION_ID}")
+    response = requests.get(f"{API_URL}/expenses/{selected_date}", params={"session_id": session_id})
     existing_expenses = response.json() if response.status_code == 200 else []
     if response.status_code != 200:
         st.error("Failed to retrieve expenses")
@@ -32,11 +37,8 @@ def add_update_tab():
 
     with st.form(key="expense_form"):
         st.markdown("### Enter Your Expenses")
-        if not is_mobile_view:
-            col1, col2, col3 = st.columns(3)
-            with col1: st.text("Amount")
-            with col2: st.text("Category")
-            with col3: st.text("Notes")
+
+        is_mobile_view = st.toggle("📱 Mobile Friendly View", value=False)
 
         expenses = []
         for i in range(5):
@@ -67,8 +69,15 @@ def add_update_tab():
         submit_button = st.form_submit_button("Save Expenses")
         if submit_button:
             filtered_expenses = [expense for expense in expenses if expense['amount'] > 0]
-            response = requests.post(f"{API_URL}/expenses/{selected_date}?session_id={SESSION_ID}", json=filtered_expenses)
-            st.success("Expenses updated successfully!") if response.status_code == 200 else st.error("Failed to update expenses.")
+            response = requests.post(
+                f"{API_URL}/expenses/{selected_date}",
+                params={"session_id": session_id},
+                json=filtered_expenses
+            )
+            if response.status_code == 200:
+                st.success("Expenses updated successfully!")
+            else:
+                st.error("Failed to update expenses.")
 
     st.markdown("""
     ---
