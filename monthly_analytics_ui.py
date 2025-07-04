@@ -25,24 +25,25 @@ def monthly_analytics_tab():
 
         try:
             response = requests.post(f"{API_URL}/analytics/monthly", json=payload)
-
-            if response.status_code == 200:
-                result = response.json()
-
-                if not result:
-                    # Fallback to demo
-                    st.session_state.session_id = "demo"
-                    st.info("No personal data found. Switched to Demo Analytics.")
-                    st.experimental_rerun()
-
-                df = pd.DataFrame(result)
-                pivot = df.pivot(index="month", columns="category", values="total").fillna(0)
-                st.title("Monthly Expense Summary")
-                st.bar_chart(pivot)
-                st.dataframe(pivot.style.format("{:.2f}"))
-
-            else:
+            if response.status_code != 200:
                 st.error("Failed to fetch monthly analytics.")
+                return
+
+            result = response.json()
+            df = pd.DataFrame(result)
+
+            if df.empty:
+                st.info("No data found for selected range.")
+                return
+
+            # 🟡 Show demo notice
+            if st.session_state.session_id == "demo":
+                st.info("You are viewing demo data analytics.")
+
+            pivot = df.pivot(index="month", columns="category", values="total").fillna(0)
+            st.title("Monthly Expense Summary")
+            st.bar_chart(pivot)
+            st.dataframe(pivot.style.format("{:.2f}"))
 
         except Exception:
             st.error("Error communicating with the backend.")
