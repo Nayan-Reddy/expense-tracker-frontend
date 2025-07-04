@@ -25,11 +25,19 @@ def analytics_tab():
 
         try:
             response = requests.post(f"{API_URL}/analytics/", json=payload)
-            if response.status_code != 200:
+
+            # If no data, fallback to demo session
+            if response.status_code == 200:
+                data = response.json()
+                if not data or sum(row["total"] for row in data.values()) == 0:
+                    # Fallback to demo
+                    st.session_state.session_id = "demo"
+                    st.info("No personal data found. Switched to Demo Analytics.")
+                    st.experimental_rerun()
+            else:
                 st.error("Failed to fetch analytics.")
                 return
 
-            data = response.json()
             df = pd.DataFrame({
                 "Category": list(data.keys()),
                 "Total": [data[cat]["total"] for cat in data],
