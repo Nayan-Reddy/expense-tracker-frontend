@@ -16,6 +16,7 @@ def add_update_tab():
         res = requests.post(f"{API_URL}/reset-demo-data")
         if res.status_code == 200:
             st.success("Demo data restored successfully.")
+            st.session_state.session_id = "demo"  # RESET to demo session
         else:
             st.error("Failed to reset demo data.")
 
