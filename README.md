@@ -22,7 +22,7 @@
 </div>
 
 <p align="center">
-  <img src="[PATH-TO-YOUR-DEMO-GIF]" alt="Expense Tracker Demo GIF" width="800"/>
+  <img src="recording.gif" alt="Expense Tracker Demo GIF" width="800"/>
 </p>
 
 ---
