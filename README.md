@@ -20,6 +20,7 @@
 <div align="center">
   <strong>Experience the live application in action: <a href="https://expense-tracker-frontend-nayan-reddy.streamlit.app/">➡️ Interact with the Live Demo Here</a></strong>
 </div>
+<br>
 
 <p align="center">
   <img src="recording.gif" alt="Expense Tracker Demo GIF" width="800"/>
